@@ -1,0 +1,4 @@
+#ifndef __SIMAPLE_DETECTOR_H__
+#define __SIMAPLE_DETECTOR_H__
+
+#endif // SIMAPLE_DETECTOR_H
