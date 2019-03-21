@@ -1,6 +1,8 @@
 #include "simaple_trainer.h"
 #include <unistd.h>
 
+HVISION_MODULE(SimapleTrainer)
+
 SimapleTrainer::SimapleTrainer(){
     this->name = "simaple_trainer";
 }

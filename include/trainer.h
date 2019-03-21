@@ -1,8 +1,10 @@
-#ifndef __TRAINER_H__
-#define __TRAINER_H__
+#ifndef __ITRAINER_H__
+#define __ITRAINER_H__
 
 #include "configure.h"
+#include "loader.h"
 #include "itrainer.h"
+
 #include <boost/thread.hpp>
 
 namespace hirop_vision {
@@ -99,6 +101,9 @@ private:
 
     // 当前的配置信息
     Configure *config;
+
+    // 动态库加载器
+    Loader *loader;
 };
 }
 

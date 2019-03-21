@@ -92,6 +92,12 @@ public:
      */
     virtual int getName(std::string &name) = 0;
 
+
+    /**
+     * @brief       析构函数
+     * @param
+     * @return
+     */
     virtual ~ITrainer(){}
 
 protected:

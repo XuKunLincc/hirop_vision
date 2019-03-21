@@ -26,12 +26,14 @@
 
 namespace hirop_vision{
 
+
+typedef void* (*FUN)();
+
 /**
  * @brief       具体算法库加载器
  * @author      XuKunLin
  * @date        2019-03-19
  */
-
 class Loader{
 
 public:
@@ -52,6 +54,30 @@ public:
      */
     IDetector *loadDetector(std::string trainerName);
 
+private:
+    /**
+     * @brief       根据类名获取其对应的导出函数名称
+     * @param       [className]输入， 类名
+     *              [funName] 输出， 输出对应的函数名
+     * @return      返回函数名
+     */
+    int getCreateFunName(std::string className, std::string &funName);
+
+
+    /**
+     * @brief       获取对应插件的实例创建函数
+     * @param   [libName] 对应动态库的名称
+     * @return      返回对应实例创建函数的指针
+     */
+    FUN getCreateFun(std::string libName);
+
+private:
+
+    // 实例创建函数的前缀
+    static std::string prefix;
+
+    // 库的加载搜索路径
+    static std::string path;
 
 };
 

@@ -1,6 +1,5 @@
 #include "trainer.h"
 #include <iostream>
-#include <boost/thread.hpp>
 
 #include "simaple_trainer.h"
 
@@ -8,6 +7,7 @@ using namespace hirop_vision;
 
 Trainer::Trainer(){
     trainThr = NULL;
+    loader = new Loader();
 }
 
 int Trainer::setTrainConfig(std::string fileName){
@@ -21,8 +21,13 @@ int Trainer::setTrainConfig(std::string fileName){
     config->getObjectName(objectName);
     config->getTrainerName(trainerName);
 
-    std::cout << "loading: " << trainerName << std::endl;
-    this->trainer = new SimapleTrainer();
+
+    this->trainer = loader->loadTrainer("SimapleTrainer");
+
+    if(this->trainer == NULL){
+        std::cerr << "loading trainer: SimapleTrainer  error" << std::endl;
+    }
+
     return 0;
 }
 
@@ -84,10 +89,15 @@ int Trainer::__train(){
 int Trainer::__genPath(std::string &path){
 
     // 数据保存的前缀路径
-    std::string prefix = "~/hirop_vision/data";
+    std::string prefix = "~/hirop_vision/data/";
+    std::string objectName;
+    std::string trainerName;
+
+    config->getObjectName(objectName);
+    config->getTrainerName(trainerName);
 
     // TODO: 检查路径是否存在，如果无则生成。检查路径是否有读写权限，如无则报错。
-    path = prefix;
+    path = prefix + trainerName + "/" + objectName + "/";
 
     return 0;
 

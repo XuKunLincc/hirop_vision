@@ -6,15 +6,18 @@ CONFIG -= qt
 DEFINES += BOOST_USE_LIB
 
 SOURCES += \
-    simaple_trainer.cpp \
+#    simaple_trainer.cpp \
     main.cpp \
     trainer.cpp \
     detector.cpp \
-    configure.cpp
+    configure.cpp \
+    loader.cpp \
+    #simape_detector.cpp
 
 LIBS += \
     /usr/lib/x86_64-linux-gnu/libboost_thread.so \
-    /usr/lib/x86_64-linux-gnu/libboost_system.so
+    /usr/lib/x86_64-linux-gnu/libboost_system.so \
+    -ldl
 
 INCLUDEPATH += include
 
