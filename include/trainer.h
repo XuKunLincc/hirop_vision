@@ -1,18 +1,42 @@
 #ifndef __ITRAINER_H__
 #define __ITRAINER_H__
 
+/*
+ * Software License Agreement (BSD License)
+ *
+ * Copyright (c) 2019, Foshan Huashu Robotics Co.,Ltd
+ * All rights reserved.
+ *
+ * Author: Kunlin Xu <1125290220@qq.com>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *      * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *      * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *      * Neither the name of the Southwest Research Institute, nor the names
+ *      of its contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
+ */
 #include "configure.h"
 #include "loader.h"
 #include "itrainer.h"
+#include "trainer_listener.h"
 
 #include <boost/thread.hpp>
 
 namespace hirop_vision {
 
 /**
- * @brief         hirop_vision的training接口类，使用该类可以进行相关的物体识别等接口
- * @author        XuKunLin
- * @date          2019-03-20
+ * @brief           hirop_vision的training接口类，使用该类可以进行相关的物体识别等接口
+ * @author          XuKunLin
+ * @date            2019-03-20
+ * @todo            1，增加状态枚举
+ *                  2，实现feedback机制
+ *                  3，增加析构函数，回收内存
  */
 class Trainer
 {
@@ -61,13 +85,13 @@ public:
 //     */
 //    int listTrain();
 
+
     /**
-     * @brief   设置当训练结束时候的回调函数
+     * @brief       设置状态变换后的监听者
+     * @param
      * @return
-     *          0   设置成功
-     *          -1  设置失败
      */
-    int setFinishCallback(CBFUN callbackFun);
+    int setOnStateChangeListener(TrainStateListener *listener);
 
 private:
 
@@ -96,14 +120,14 @@ private:
     // 具体的训练器
     hirop_vision::ITrainer *trainer;
 
-    // 训练结束时的回调函数
-    CBFUN callbackFun;
-
     // 当前的配置信息
     Configure *config;
 
     // 动态库加载器
     Loader *loader;
+
+    // 训练状态变换监听者
+    TrainStateListener *listener;
 };
 }
 

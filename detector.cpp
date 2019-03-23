@@ -4,6 +4,7 @@ using namespace hirop_vision;
 
 Detector::Detector(){
     detectionThr = NULL;
+    listener = NULL;
     loader = new Loader();
 }
 
@@ -26,8 +27,6 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName){
         return -1;
     }
 
-
-
     detectorPtr = loader->loadDetector(detectorName);
     if(!detectorPtr){
         std::cerr << "start detection error: load detector was error" << std::endl;
@@ -40,21 +39,22 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName){
     // 启动线程
     detectionThr->join();
 
+    return 0;
+
 }
 
 
-int Detector::setFinishCallback(CBFUN callbackFunc){
-    if(callbackFunc == NULL){
-        std::cerr << "detector callback was null" << std::endl;
+int Detector::setOnStateChangeCallback(DetectStateListener *listener){
+    if(listener == NULL){
+        std::cerr << "set state listener was error: listener can't be NULL" << std::endl;
         return -1;
     }
 
-    this->callbackFunc = callbackFunc;
+    this->listener = listener;
     return 0;
 }
 
 int Detector::__detection(const std::string objName, IDetector *detector){
-
 
     pose result;
     int ret;
@@ -79,7 +79,10 @@ int Detector::__detection(const std::string objName, IDetector *detector){
         return -1;
     }
 
-    callbackFunc("SimapleDetector", result);
+    /**
+      * @todo 传递给监听者正确的识别结束状态码
+      */
+    listener->onDetectDone("SimapleDetector", ret, result);
 
     return 0;
 }

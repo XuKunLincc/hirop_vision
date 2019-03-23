@@ -8,27 +8,38 @@ using namespace hirop_vision;
 Trainer::Trainer(){
     trainThr = NULL;
     loader = new Loader();
+    listener = NULL;
 }
 
 int Trainer::setTrainConfig(std::string fileName){
 
-    // 获取配置信息
     std::string trainerName;
     std::string objectName;
+
+    // 获取配置信息
     this->config = new Configure(fileName);
 
-    // TODO 直接保存Configure对象
-    config->getObjectName(objectName);
-    config->getTrainerName(trainerName);
+    // 获取训练物体名称
+    if(config->getObjectName(objectName))
+        goto _failed;
 
+    // 获取训练器名称
+    if(config->getTrainerName(trainerName))
+        goto _failed;
 
-    this->trainer = loader->loadTrainer("SimapleTrainer");
+    // 加载训练器实例
+    this->trainer = loader->loadTrainer(trainerName);
 
     if(this->trainer == NULL){
         std::cerr << "loading trainer: SimapleTrainer  error" << std::endl;
     }
 
     return 0;
+
+    // 获取配置时出现的错误
+_failed:
+    std::cerr << "Paser config file error" << std::endl;
+    return -1;
 }
 
 int Trainer::train(){
@@ -52,14 +63,16 @@ int Trainer::train(){
     // 启动线程
     trainThr->join();
 
+    return 0;
 }
 
-int Trainer::setFinishCallback(CBFUN callbackFun){
-    if(callbackFun == NULL){
-        std::cerr << "call back function ptr was null" << std::endl;
+
+int Trainer::setOnStateChangeListener(TrainStateListener *listener){
+    if(listener == NULL){
+        std::cerr << "set state listener was error: listener can't be NULL" << std::endl;
         return -1;
     }
-    this->callbackFun = callbackFun;
+    this->listener = listener;
     return 0;
 }
 
@@ -73,13 +86,14 @@ int Trainer::__train(){
     trainer->getName(trainName);
 
     // 调用训练完成回调函数
-    if(callbackFun != NULL)
-        callbackFun(ret, trainName);
+    if(listener != NULL)
+        listener->onTrainDone(trainName, ret);
 
     // 训练成功 保存结果
-    if(ret == 0)
+    if(ret == 0){
         __genPath(path);
         trainer->saveData(path);
+    }
 
     // 删除线程对象
     delete trainThr;
@@ -89,7 +103,7 @@ int Trainer::__train(){
 int Trainer::__genPath(std::string &path){
 
     // 数据保存的前缀路径
-    std::string prefix = "~/hirop_vision/data/";
+    std::string prefix = "/home/eima/hirop_vision/data/";
     std::string objectName;
     std::string trainerName;
 

@@ -1,6 +1,7 @@
 #include "trainer.h"
 #include "vision.h"
 #include "detector.h"
+#include "c_base_trainer.h"
 
 using namespace hirop_vision;
 
@@ -22,11 +23,10 @@ int main(int argc, char *argv[])
     int i;
 
     Trainer t;
-    t.setTrainConfig("test");
+    t.setTrainConfig("test.yaml");
     t.train();
 
     Detector d;
-    d.setFinishCallback(detectionCB);
     d.detectionOnce("coke", "SimapleDetector");
 
     std::cin >> i;

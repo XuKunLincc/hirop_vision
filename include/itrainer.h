@@ -94,6 +94,12 @@ public:
 
 
     /**
+     * @brief      获取当前训练器的实现实体
+     * @return      返回训练器的实现实体类别
+     */
+    virtual ENTITY_TYPE getEntityType() = 0;
+
+    /**
      * @brief       析构函数
      * @param
      * @return

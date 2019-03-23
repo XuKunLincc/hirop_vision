@@ -18,56 +18,47 @@
  *      of its contributors may be used to endorse or promote products derived
  *      from this software without specific prior written permission.
  */
-
-#ifndef __CONFIGURE_H__
-#define __CONFIGURE_H__
+#ifndef TRAINER_LISTENER_H
+#define TRAINER_LISTENER_H
 
 #include <iostream>
-#include <stdio.h>
-#include "yaml-cpp/yaml.h"
-
-#ifdef DEBUG
-#define configDebug(format, ...)  printf("[debug ]: " #format "\n[detail]: File: %s, Line: %d, Function: %s \n",\
-    ##__VA_ARGS__, __FILE__, __LINE__, __FUNCTION__);
-#else
-#define configDebug(format, ...)
-#endif
 
 namespace hirop_vision {
 
-class Configure{
+
+/**
+ * @brief       训练器状态变化监听器接口类
+ * @author      XuKunLin
+ * @date        2019-03-22
+ */
+class TrainStateListener{
 
 public:
     /**
-     * @brief 构造函数
-     * @param [file] 输入， yaml配置文件名称
+     * @brief       当训练器完成训练后，调用该函数
+     * @param [trainer] 完成训练的训练器名称
+     * @param [ret]     训练器返回结果 0 成功 1 失败
+     * @return void
      */
-    Configure(std::string file);
+    virtual void onTrainDone(const std::string trainer, int ret) = 0;
 
     /**
-     * @brief       获取配置文件中的物体名称
-     * @param    [objName] 输出， 物体名称
-     * @return
-     *          0 成功
-     *          1 失败
+     * @brief       当训练器发生训练进度变化时，调用该函数
+     * @param [trainer]     发生进度变化的训练器名称
+     * @param [feed]        训练进度
+     * @return      void
      */
-    int getObjectName(std::string &objName);
+    virtual void feekback(const std::string trainer, int feed) = 0;
 
     /**
-     * @brief       获取配置文件中训练器名称
-     * @param   [trainerName] 输出，训练器名称
+     * @brief       默认析构函数
+     * @param
      * @return
-     *          0 成功
-     *          1 失败
      */
-    int getTrainerName(std::string &trainerName);
-
-private:
-    // 当前Configuere中的yaml配置文件实例
-    YAML::Node config;
+    virtual ~TrainStateListener(){}
 
 };
 
 }
 
-#endif
+#endif // TRAINER_LISTENER_H

@@ -18,25 +18,30 @@
  *      of its contributors may be used to endorse or promote products derived
  *      from this software without specific prior written permission.
  */
-#ifndef __SIMAPLE_DETECTOR_H__
-#define __SIMAPLE_DETECTOR_H__
+#ifndef DETECTION_LISTENER_H
+#define DETECTION_LISTENER_H
 
-#include "idetector.h"
+#include "vision.h"
+#include <iostream>
 
-using namespace hirop_vision;
+namespace hirop_vision {
 
-class SimapleDetector:public IDetector{
-
+/**
+ * @brief       检测器状态变化监听器。
+ * @author      XuKunLin
+ * @date        2019-03-22
+ */
+class DetectStateListener{
 
 public:
-    SimapleDetector();
-
-    int detection();
-
-    int loadData(std::string objectName);
-
-    int getResult(pose &p);
-
+    /**
+     * @brief       当检测器状态发生变化后，调用该函数
+     * @param [detector]    发生状态变化的检测器名称
+     * @return      void
+     */
+    virtual void onDetectDone(std::string detector, int ret, pose p);
 };
 
-#endif // SIMAPLE_DETECTOR_H
+}
+
+#endif // DETECTION_LISTENER_H

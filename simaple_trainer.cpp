@@ -3,8 +3,7 @@
 
 HVISION_MODULE(SimapleTrainer)
 
-SimapleTrainer::SimapleTrainer(){
-    this->name = "simaple_trainer";
+SimapleTrainer::SimapleTrainer():CBaseTrainer("simaple_trainer"){
 }
 
 int SimapleTrainer::train(){
@@ -28,11 +27,6 @@ int SimapleTrainer::deleteData(){
 
 int SimapleTrainer::feedback(){
     return feed;
-}
-
-int SimapleTrainer::getName(std::string &name){
-    name = this->name;
-    return 0;
 }
 
 int SimapleTrainer::parseConfig(){

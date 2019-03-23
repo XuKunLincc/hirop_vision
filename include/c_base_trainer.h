@@ -19,53 +19,33 @@
  *      from this software without specific prior written permission.
  */
 
-#ifndef __CONFIGURE_H__
-#define __CONFIGURE_H__
+#ifndef __C_BASE_TRAINER_H__
+#define __C_BASE_TRAINER_H__
 
-#include <iostream>
-#include <stdio.h>
-#include "yaml-cpp/yaml.h"
-
-#ifdef DEBUG
-#define configDebug(format, ...)  printf("[debug ]: " #format "\n[detail]: File: %s, Line: %d, Function: %s \n",\
-    ##__VA_ARGS__, __FILE__, __LINE__, __FUNCTION__);
-#else
-#define configDebug(format, ...)
-#endif
+#include "itrainer.h"
 
 namespace hirop_vision {
 
-class Configure{
-
+class CBaseTrainer:public ITrainer{
 public:
     /**
-     * @brief 构造函数
-     * @param [file] 输入， yaml配置文件名称
+     * @brief       构造函数
+     * @param   [trainerName] 训练器的名称
      */
-    Configure(std::string file);
+    CBaseTrainer(std::string trainerName);
 
     /**
-     * @brief       获取配置文件中的物体名称
-     * @param    [objName] 输出， 物体名称
-     * @return
-     *          0 成功
-     *          1 失败
+     * @brief       获取训练器的名称
+     * @param   [name] 返回训练器的名称
+     * @return  0 成功 1 失败
      */
-    int getObjectName(std::string &objName);
+    int getName(std::string &name);
 
     /**
-     * @brief       获取配置文件中训练器名称
-     * @param   [trainerName] 输出，训练器名称
-     * @return
-     *          0 成功
-     *          1 失败
+     * @brief      获取当前训练器的实现实体
+     * @return      返回训练器的实现实体类别
      */
-    int getTrainerName(std::string &trainerName);
-
-private:
-    // 当前Configuere中的yaml配置文件实例
-    YAML::Node config;
-
+    ENTITY_TYPE getEntityType();
 };
 
 }
