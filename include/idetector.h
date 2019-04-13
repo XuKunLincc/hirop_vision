@@ -22,6 +22,8 @@
 #define __IDETERCTOR_H__
 
 #include <iostream>
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "vision.h"
 
 namespace hirop_vision{
@@ -50,7 +52,13 @@ public:
      * @brief   加载相关识别器识别时需要的数据
      * @return void
      */
-    virtual int loadData(std::string objectName) = 0;
+    virtual int loadData(const std::string path, const std::string objectName) = 0;
+
+    /**
+     * @brief   传递识别需要的图片数据
+     * @return void
+     */
+    virtual void setImg(const cv::Mat &inputImg) = 0;
 
 //    /**
 //     * @brief   传递识别需要的图片数据
@@ -66,9 +74,22 @@ public:
 
     /**
      * @brief  获取图像识别过程中的结果
-     * @return void
+     * @return 0 成功 -1 失败
      */
     virtual int getResult(pose &p) = 0;
+
+    /**
+     * @brief  获取识别器的名称
+     * @return 0 成功 -1 失败
+     */
+    virtual int getName(std::string &name) = 0;
+
+
+    /**
+     * @brief      获取当前训练器的实现实体
+     * @return      返回训练器的实现实体类别
+     */
+    virtual ENTITY_TYPE getEntityType() = 0;
 
 protected:
     // 保存识别器的字符描述

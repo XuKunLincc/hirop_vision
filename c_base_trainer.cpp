@@ -3,10 +3,8 @@
 using namespace hirop_vision;
 
 CBaseTrainer::CBaseTrainer(std::string name){
-
     this->name =  name;
     this->entityType = CPP;
-
 }
 
 int CBaseTrainer::getName(std::string &name){

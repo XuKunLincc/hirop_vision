@@ -59,8 +59,12 @@ int Detector::__detection(const std::string objName, IDetector *detector){
     pose result;
     int ret;
 
+    // 数据保存的前缀路径
+    std::string prefix = "/home/eima/hirop_vision/data/";
+    std::string detectorName = "LinemodTrainer";
+
     // 加载参数
-    ret = detector->loadData(objName);
+    ret = detector->loadData(prefix + detectorName + "/" + objName, objName);
     if(ret){
         std::cerr << "load data error" << std::endl;
         return -1;

@@ -15,7 +15,8 @@ SOURCES += \
     detector.cpp \
     configure.cpp \
     loader.cpp \
-    c_base_trainer.cpp
+    c_base_trainer.cpp \
+    c_base_detector.cpp
     #simape_detector.cpp
 
 LIBS += \
@@ -89,4 +90,6 @@ HEADERS += \
     include/trainer_listener.h \
     include/detection_listener.h \
     include/linemod_trainer.h \
-    include/c_base_trainer.h
+    include/c_base_trainer.h \
+    include/c_base_detector.h \
+    include/entity_factory.h

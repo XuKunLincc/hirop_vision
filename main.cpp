@@ -22,12 +22,12 @@ int main(int argc, char *argv[])
 {
     int i;
 
-    Trainer t;
-    t.setTrainConfig("test.yaml");
-    t.train();
+//    Trainer t;
+//    t.setTrainConfig("test.yaml");
+//    t.train();
 
     Detector d;
-    d.detectionOnce("coke", "SimapleDetector");
+    d.detectionOnce("cokecan", "LinemodDetector");
 
     std::cin >> i;
 
