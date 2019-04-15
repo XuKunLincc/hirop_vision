@@ -15,3 +15,11 @@ int CBaseDetector::getName(std::string &name){
 ENTITY_TYPE CBaseDetector::getEntityType(){
     return this->entityType;
 }
+
+void CBaseDetector::setColorImg(const cv::Mat &inputImg){
+
+}
+
+void CBaseDetector::setDepthImg(const cv::Mat &inputImg){
+
+}

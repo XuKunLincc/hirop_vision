@@ -65,7 +65,7 @@ public:
      *          0  开始识别成功
      *          -1 开始识别失败
      */
-    int detectionOnce(std::string objectName, std::string detectorName, cv::Mat &inputImg);
+				int detectionOnce(std::string objectName, std::string detectorName);
 
 
     /**

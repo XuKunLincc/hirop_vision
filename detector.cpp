@@ -8,7 +8,7 @@ Detector::Detector(){
     loader = new Loader();
 }
 
-int Detector::detectionOnce(std::string objectName, std::string detectorName, cv::Mat &inputImg){
+int Detector::detectionOnce(std::string objectName, std::string detectorName){
     /**
      * @todo
      *      1, 根据训练器名称，加载训练器
@@ -32,8 +32,6 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName, cv
         std::cerr << "start detection error: load detector was error" << std::endl;
         return -1;
     }
-
-    detectorPtr->setImg(inputImg);
 
     boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr);
     detectionThr = new boost::thread(f);

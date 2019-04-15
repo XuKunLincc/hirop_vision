@@ -10,6 +10,12 @@ DEFINES += BOOST_USE_LIB DEBUG
 
 TARGET = hirop_vision
 
+win32 {
+      OPENCV_INC = F:/Program Files (x86)/opencv/opencv/build/include
+      BOOST_INC = F:\Program Files\PCL 1.6.0\3rdParty\Boost\include
+}
+
+
 SOURCES += \
     trainer.cpp \
     detector.cpp \
@@ -26,8 +32,11 @@ LIBS += \
     -Wl,-rpath=/home/fshs/work/hirop_vision/hirop_framewrok/libs/ \
     -ldl
 
-INCLUDEPATH += include
+INCLUDEPATH += include \
+      $$quote($$OPENCV_INC) \
+      $$quote($$BOOST_INC)
 
+INSTALLPATH = ../hirop_vision_install
 
 inst.files += \
     include/idetector.h \
@@ -43,7 +52,7 @@ inst.files += \
     include/loader.h \
     include/detection_listener.h
 
-inst.path = ../hirop_vision_install/include
+inst.path = $$INSTALLPATH/include
 
 libinst.files += \
     libhirop_vision.so \
@@ -52,7 +61,7 @@ libinst.files += \
     libhirop_vision.so.1.0.0 \
     libs/* 
 
-libinst.path = ../hirop_vision_install/libs
+libinst.path = $$INSTALLPATH/libs
 
 INSTALLS += libinst inst
 

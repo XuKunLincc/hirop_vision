@@ -55,16 +55,16 @@ public:
     virtual int loadData(const std::string path, const std::string objectName) = 0;
 
     /**
-     * @brief   传递识别需要的图片数据
+					* @brief   传递识别需要的彩色图片数据
      * @return void
      */
-    virtual void setImg(const cv::Mat &inputImg) = 0;
+				virtual void setColorImg(const cv::Mat &inputImg) = 0;
 
-//    /**
-//     * @brief   传递识别需要的图片数据
-//     * @return void
-//     */
-//    virtual void setImg() = 0;
+				/**
+					* @brief   传递识别需要的深度图片数据
+					* @return void
+					*/
+				virtual void setDepthImg(const cv::Mat &inputImg) = 0;
 
 //    /**
 //     * @brief   获取识别过程中的预览图片
