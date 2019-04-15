@@ -8,7 +8,7 @@ Detector::Detector(){
     loader = new Loader();
 }
 
-int Detector::detectionOnce(std::string objectName, std::string detectorName){
+int Detector::detectionOnce(std::string objectName, std::string detectorName, cv::Mat &inputImg){
     /**
      * @todo
      *      1, 根据训练器名称，加载训练器
@@ -33,6 +33,8 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName){
         return -1;
     }
 
+    detectorPtr->setImg(inputImg);
+
     boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr);
     detectionThr = new boost::thread(f);
 
@@ -42,7 +44,6 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName){
     return 0;
 
 }
-
 
 int Detector::setOnStateChangeCallback(DetectStateListener *listener){
     if(listener == NULL){
@@ -60,7 +61,7 @@ int Detector::__detection(const std::string objName, IDetector *detector){
     int ret;
 
     // 数据保存的前缀路径
-    std::string prefix = "/home/eima/hirop_vision/data/";
+    std::string prefix = "/home/fshs/hirop_vision/data/";
     std::string detectorName = "LinemodTrainer";
 
     // 加载参数

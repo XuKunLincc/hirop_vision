@@ -103,7 +103,7 @@ int Trainer::__train(){
 int Trainer::__genPath(std::string &path){
 
     // 数据保存的前缀路径
-    std::string prefix = "/home/eima/hirop_vision/data/";
+    std::string prefix = "/home/fshs/hirop_vision/data/";
     std::string objectName;
     std::string trainerName;
 

@@ -53,7 +53,7 @@ FUN Loader::getCreateFun(std::string libName){
     FUN funPtr;
 
 
-    dlfileName = "/home/eima/tmp/qt_ws/build-hirop_framewrok-Desktop-Debug/lib";
+    dlfileName = "lib";
     dlfileName += libName;
     dlfileName += ".so";
 

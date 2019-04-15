@@ -65,7 +65,7 @@ public:
      *          0  开始识别成功
      *          -1 开始识别失败
      */
-    int detectionOnce(std::string objectName, std::string detectorName);
+    int detectionOnce(std::string objectName, std::string detectorName, cv::Mat &inputImg);
 
 
     /**
@@ -74,7 +74,6 @@ public:
      * @return  0 成功 1 失败
      */
     int setOnStateChangeCallback(DetectStateListener *listener);
-
 
 private:
 

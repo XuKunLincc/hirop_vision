@@ -1,5 +1,5 @@
-TEMPLATE = app
-CONFIG += console
+TEMPLATE = lib
+CONFIG += console c++11 dll
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -8,9 +8,9 @@ QMAKE_LFLAGS += -std=c++11 -Wl,--export-dynamic
 
 DEFINES += BOOST_USE_LIB DEBUG
 
+TARGET = hirop_vision
+
 SOURCES += \
- #   simaple_trainer.cpp \
-    main.cpp \
     trainer.cpp \
     detector.cpp \
     configure.cpp \
@@ -20,10 +20,10 @@ SOURCES += \
     #simape_detector.cpp
 
 LIBS += \
-    /usr/lib/x86_64-linux-gnu/libboost_thread.so \
-    /usr/lib/x86_64-linux-gnu/libboost_system.so \
-    /home/eima/tmp/qt_ws/hirop_framewrok/libs/libyaml-cpp.a \
-    /home/eima/tmp/qt_ws/simaple_trainer/libSimapleTrainer.so \
+    -lboost_thread \
+    -lboost_system \
+    /home/fshs/work/hirop_vision/hirop_framewrok/libs/libyaml-cpp.so.0.6 \
+    -Wl,-rpath=/home/fshs/work/hirop_vision/hirop_framewrok/libs/ \
     -ldl
 
 INCLUDEPATH += include
@@ -35,10 +35,26 @@ inst.files += \
     include/itrainer.h\
     include/simaple_trainer.h \
     include/trainer_listener.h \
+    include/c_base_detector.h \
+    include/c_base_trainer.h \
+    include/detector.h \
+    include/trainer.h \
+    include/configure.h \
+    include/loader.h \
+    include/detection_listener.h
 
-inst.path = install/
+inst.path = ../hirop_vision_install/include
 
-INSTALLS += inst
+libinst.files += \
+    libhirop_vision.so \
+    libhirop_vision.so.1 \
+    libhirop_vision.so.1.0 \
+    libhirop_vision.so.1.0.0 \
+    libs/* 
+
+libinst.path = ../hirop_vision_install/libs
+
+INSTALLS += libinst inst
 
 HEADERS += \
     include/idetector.h \
