@@ -42,11 +42,11 @@ public:
      */
     virtual int detection() = 0;
 
-//    /**
-//     * @brief   解析识别器私有训练器配置，具体由相关识别器实现
-//     * @return void
-//     */
-//    virtual int parseConfig() = 0;
+    //    /**
+    //     * @brief   解析识别器私有训练器配置，具体由相关识别器实现
+    //     * @return void
+    //     */
+    //    virtual int parseConfig() = 0;
 
     /**
      * @brief   加载相关识别器识别时需要的数据
@@ -55,28 +55,28 @@ public:
     virtual int loadData(const std::string path, const std::string objectName) = 0;
 
     /**
-					* @brief   传递识别需要的彩色图片数据
+                    * @brief   传递识别需要的彩色图片数据
      * @return void
      */
-				virtual void setColorImg(const cv::Mat &inputImg) = 0;
+    virtual void setColorImg(const cv::Mat &inputImg) = 0;
 
-				/**
-					* @brief   传递识别需要的深度图片数据
-					* @return void
-					*/
-				virtual void setDepthImg(const cv::Mat &inputImg) = 0;
+    /**
+                    * @brief   传递识别需要的深度图片数据
+                    * @return void
+                    */
+    virtual void setDepthImg(const cv::Mat &inputImg) = 0;
 
-//    /**
-//     * @brief   获取识别过程中的预览图片
-//     * @return void
-//     */
-//    virtual void getImg() = 0;
+    //    /**
+    //     * @brief   获取识别过程中的预览图片
+    //     * @return void
+    //     */
+    //    virtual void getImg() = 0;
 
     /**
      * @brief  获取图像识别过程中的结果
      * @return 0 成功 -1 失败
      */
-    virtual int getResult(pose &p) = 0;
+    virtual int getResult(std::vector<pose> &poses) = 0;
 
     /**
      * @brief  获取识别器的名称

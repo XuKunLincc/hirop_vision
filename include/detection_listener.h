@@ -23,6 +23,7 @@
 
 #include "vision.h"
 #include <iostream>
+#include <vector>
 
 namespace hirop_vision {
 
@@ -39,7 +40,7 @@ public:
      * @param [detector]    发生状态变化的检测器名称
      * @return      void
      */
-    virtual void onDetectDone(std::string detector, int ret, pose p);
+    virtual void onDetectDone(std::string detector, int ret, std::vector<pose> p);
 };
 
 }

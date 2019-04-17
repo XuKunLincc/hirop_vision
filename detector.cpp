@@ -8,7 +8,7 @@ Detector::Detector(){
     loader = new Loader();
 }
 
-int Detector::detectionOnce(std::string objectName, std::string detectorName){
+int Detector::detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg){
     /**
      * @todo
      *      1, 根据训练器名称，加载训练器
@@ -33,6 +33,9 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName){
         return -1;
     }
 
+    detectorPtr->setColorImg(colorImg);
+    detectorPtr->setDepthImg(depthImg);
+
     boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr);
     detectionThr = new boost::thread(f);
 
@@ -55,7 +58,7 @@ int Detector::setOnStateChangeCallback(DetectStateListener *listener){
 
 int Detector::__detection(const std::string objName, IDetector *detector){
 
-    pose result;
+    std::vector<pose> results;
     int ret;
 
     // 数据保存的前缀路径
@@ -76,7 +79,7 @@ int Detector::__detection(const std::string objName, IDetector *detector){
         return -1;
     }
 
-    ret = detector->getResult(result);
+    ret = detector->getResult(results);
     if(ret){
         std::cerr << "get result error" << std::endl;
         return -1;
@@ -85,7 +88,8 @@ int Detector::__detection(const std::string objName, IDetector *detector){
     /**
       * @todo 传递给监听者正确的识别结束状态码
       */
-    listener->onDetectDone("SimapleDetector", ret, result);
+    if(listener != NULL)
+        listener->onDetectDone("SimapleDetector", ret, results);
 
     return 0;
 }

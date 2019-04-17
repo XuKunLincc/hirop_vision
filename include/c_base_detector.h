@@ -14,9 +14,9 @@ public:
 
     ENTITY_TYPE getEntityType();
 
-				void setColorImg(const cv::Mat &inputImg);
+    void setColorImg(const cv::Mat &inputImg);
 
-				void setDepthImg(const cv::Mat &inputImg);
+    void setDepthImg(const cv::Mat &inputImg);
 
 private:
 };

@@ -50,7 +50,9 @@ inst.files += \
     include/trainer.h \
     include/configure.h \
     include/loader.h \
-    include/detection_listener.h
+    include/detection_listener.h \
+    include/hirop_debug.h
+
 
 inst.path = $$INSTALLPATH/include
 
@@ -117,4 +119,5 @@ HEADERS += \
     include/linemod_trainer.h \
     include/c_base_trainer.h \
     include/c_base_detector.h \
-    include/entity_factory.h
+    include/entity_factory.h \
+    include/hirop_debug.h

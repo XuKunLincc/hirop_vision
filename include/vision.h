@@ -41,19 +41,20 @@ enum ENTITY_TYPE{
 };
 
 typedef struct quaternion{
-    float x;
-    float y;
-    float z;
-    float w;
+    double x;
+    double y;
+    double z;
+    double w;
 } quaternion;
 
 typedef struct position{
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
 } position;
 
 typedef struct pose{
+    std::string objectName;
     struct quaternion quaternion;
     struct position position;
 } pose;

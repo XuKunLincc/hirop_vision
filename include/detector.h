@@ -65,8 +65,7 @@ public:
      *          0  开始识别成功
      *          -1 开始识别失败
      */
-				int detectionOnce(std::string objectName, std::string detectorName);
-
+    int detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg);
 
     /**
      * @brief       设置当识别状态监听者实例
