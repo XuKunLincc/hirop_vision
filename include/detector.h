@@ -42,13 +42,13 @@ namespace hirop_vision {
  */
 class Detector{
 
-/**
+    /**
  * @brief       检测完成后的回调函数原型
  * @param       [detectorName] 检测器的名称
  * @param       [pose]         检测结果，姿态。 基于相机坐标的位姿，四元数表示法。
  * @return      无返回
  */
-typedef void (*CBFUN)(std::string detectorName, pose p);
+    typedef void (*CBFUN)(std::string detectorName, pose p);
 
 public:
 
@@ -67,6 +67,8 @@ public:
      */
     int detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg);
 
+    int detection(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg);
+
     /**
      * @brief       设置当识别状态监听者实例
      * @param [listener] 监听者实例
@@ -82,7 +84,7 @@ private:
      * @param [detector] 即将执行识别工作的识别器实例
      * @return
      */
-    int __detection(const std::string objName, IDetector *detector);
+    int __detection(const std::string objName, IDetector *detector, bool loop);
 
 private:
     // 状态监听者实例
@@ -97,6 +99,8 @@ private:
 
     // 动态库加载器
     Loader *loader;
+
+    IDetector *detectorPtr;
 };
 
 }

@@ -6,6 +6,7 @@ Detector::Detector(){
     detectionThr = NULL;
     listener = NULL;
     loader = new Loader();
+    detectorPtr = NULL;
 }
 
 int Detector::detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg){
@@ -17,8 +18,6 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
      *
      **/
 
-    IDetector *detectorPtr;
-
     this->objectName = objectName;
     this->detectorName = detectorName;
 
@@ -27,7 +26,8 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
         return -1;
     }
 
-    detectorPtr = loader->loadDetector(detectorName);
+    if(!detectorPtr)
+        detectorPtr = loader->loadDetector(detectorName);
     if(!detectorPtr){
         std::cerr << "start detection error: load detector was error" << std::endl;
         return -1;
@@ -36,7 +36,7 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
     detectorPtr->setColorImg(colorImg);
     detectorPtr->setDepthImg(depthImg);
 
-    boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr);
+    boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr, false);
     detectionThr = new boost::thread(f);
 
     // 启动线程
@@ -44,6 +44,24 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
 
     return 0;
 
+}
+
+int Detector::detection(std::string objectName, std::string detectorName, const cv::Mat &depthImg, const cv::Mat &colorImg){
+
+    if(!detectorPtr)
+        detectorPtr = loader->loadDetector(detectorName);
+    if(!detectorPtr){
+        std::cerr << "start detection error: load detector was error" << std::endl;
+        return -1;
+    }
+
+    boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr, true);
+    detectionThr = new boost::thread(f);
+
+    // 启动线程
+    detectionThr->join();
+
+    return 0;
 }
 
 int Detector::setOnStateChangeCallback(DetectStateListener *listener){
@@ -56,7 +74,7 @@ int Detector::setOnStateChangeCallback(DetectStateListener *listener){
     return 0;
 }
 
-int Detector::__detection(const std::string objName, IDetector *detector){
+int Detector::__detection(const std::string objName, IDetector *detector, bool loop){
 
     std::vector<pose> results;
     int ret;
@@ -89,7 +107,9 @@ int Detector::__detection(const std::string objName, IDetector *detector){
       * @todo 传递给监听者正确的识别结束状态码
       */
     if(listener != NULL)
-        listener->onDetectDone("SimapleDetector", ret, results);
+        listener->onDetectDone(detectorName, ret, results);
 
+    delete detectionThr;
+    detectionThr = NULL;
     return 0;
 }
