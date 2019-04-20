@@ -6,6 +6,7 @@ Detector::Detector(){
     detectionThr = NULL;
     listener = NULL;
     loader = new Loader();
+    pyLoader = PyLoader::getPyLoader();
     detectorPtr = NULL;
 }
 
@@ -27,7 +28,7 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
     }
 
     if(!detectorPtr)
-        detectorPtr = loader->loadDetector(detectorName);
+        detectorPtr = pyLoader->loadDetector(detectorName);
     if(!detectorPtr){
         std::cerr << "start detection error: load detector was error" << std::endl;
         return -1;

@@ -27,6 +27,7 @@
 #include "detection_listener.h"
 
 #include <boost/thread.hpp>
+#include "py_loader.h"
 
 namespace hirop_vision {
 
@@ -99,6 +100,8 @@ private:
 
     // 动态库加载器
     Loader *loader;
+
+    PyLoader *pyLoader;
 
     IDetector *detectorPtr;
 };

@@ -15,6 +15,9 @@ win32 {
       BOOST_INC = F:\Program Files\PCL 1.6.0\3rdParty\Boost\include
 }
 
+PYTHON_INC =  /home/fshs/anaconda3/include/python3.6m
+PYTHON_LIBPATH = /home/fshs/anaconda3/lib
+PYTHON_LIBS = -lpython3.6m
 
 SOURCES += \
     trainer.cpp \
@@ -22,19 +25,25 @@ SOURCES += \
     configure.cpp \
     loader.cpp \
     c_base_trainer.cpp \
-    c_base_detector.cpp
-    #simape_detector.cpp
+    c_base_detector.cpp \
+    py_base_detector.cpp \
+    py_loader.cpp \
+    py_lock_helper.cpp
 
 LIBS += \
     -lboost_thread \
     -lboost_system \
-    /home/fshs/work/hirop_vision/hirop_framewrok/libs/libyaml-cpp.so.0.6 \
-    -Wl,-rpath=/home/fshs/work/hirop_vision/hirop_framewrok/libs/ \
+    /home/fshs/work/hirop_vision/hirop_framework/libs/libyaml-cpp.so.0.6 \
+    -Wl,-rpath=/home/fshs/work/hirop_vision/hirop_framework/libs/ \
+    -Wl,-rpath=/home/fshs/anaconda3/lib/\
+    -L$$PYTHON_LIBPATH \
+    -lpython3.6m \
     -ldl
 
 INCLUDEPATH += include \
       $$quote($$OPENCV_INC) \
-      $$quote($$BOOST_INC)
+      $$quote($$BOOST_INC) \
+      $$PYTHON_INC
 
 INSTALLPATH = ../hirop_vision_install
 
@@ -51,7 +60,8 @@ inst.files += \
     include/configure.h \
     include/loader.h \
     include/detection_listener.h \
-    include/hirop_debug.h
+    include/hirop_debug.h \
+    include/py_loader.h
 
 
 inst.path = $$INSTALLPATH/include
@@ -120,4 +130,7 @@ HEADERS += \
     include/c_base_trainer.h \
     include/c_base_detector.h \
     include/entity_factory.h \
-    include/hirop_debug.h
+    include/hirop_debug.h \
+    include/py_base_detector.h \
+    include/py_loader.h \
+    include/utils/py_lock_helper.h

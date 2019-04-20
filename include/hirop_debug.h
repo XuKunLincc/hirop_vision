@@ -10,6 +10,8 @@ namespace hirop_vision{
 #endif
 
 #define ISuccessPrint(format, ...)  printf("\033[32m[output]: " #format "\033[0m \n", ##__VA_ARGS__);
+
+#define IErrorPrint(format, ...)  printf("\033[32m[output]: " #format "\033[0m \n", ##__VA_ARGS__);
 }
 
 #endif
