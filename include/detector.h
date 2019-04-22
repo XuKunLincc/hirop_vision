@@ -72,7 +72,7 @@ public:
      * @return 0 成功 -1 失败
      */
     int setDetector(const std::string &name, const std::string &objectName, ENTITY_TYPE type, \
-                    const std::string &configFile = NULL);
+                    std::string configFile = "");
 
     /**
      * @brief   开始进行物体识别，只检测一次，检测成功后即返回
@@ -106,7 +106,7 @@ private:
      * @param [detector] 即将执行识别工作的识别器实例
      * @return
      */
-    int __detection(const std::string objName, IDetector *detector, bool loop);
+    int __detection(bool loop);
 
 
 private:
@@ -140,12 +140,12 @@ private:
     /**
      * @brief cppSingleDetectors C++单物体识别器缓存
      */
-    std::map<std::string, std::map<std::string, IDetector*>> cppSingleDetectors;
+    std::map<std::string, std::map<std::string, IDetector*> > cppSingleDetectors;
 
     /**
      * @brief pySingleDetectors python单物体识别器缓存
      */
-    std::map<std::string, std::map<std::string, IDetector*>> pySingleDetectors;
+    std::map<std::string, std::map<std::string, IDetector*> > pySingleDetectors;
 };
 
 }

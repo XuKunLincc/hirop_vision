@@ -33,11 +33,11 @@ int Detector::detectionOnce(const cv::Mat &depthImg, const cv::Mat &colorImg){
     detectorPtr->setColorImg(colorImg);
     detectorPtr->setDepthImg(depthImg);
 
-    boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr, false);
+    boost::function0<int> f =  boost::bind(&Detector::__detection,this, false);
     detectionThr = new boost::thread(f);
 
     // 启动线程
-    detectionThr->join();
+    detectionThr->timed_join(boost::posix_time::microseconds(1));
 
     return 0;
 
@@ -52,11 +52,11 @@ int Detector::detection(std::string objectName, std::string detectorName, const 
         return -1;
     }
 
-    boost::function0<int> f =  boost::bind(&Detector::__detection,this, objectName, detectorPtr, true);
+    boost::function0<int> f =  boost::bind(&Detector::__detection,this,  true);
     detectionThr = new boost::thread(f);
 
     // 启动线程
-    detectionThr->join();
+    detectionThr->timed_join(boost::posix_time::microseconds(1));
 
     return 0;
 }
@@ -71,19 +71,19 @@ int Detector::setOnStateChangeCallback(DetectStateListener *listener){
     return 0;
 }
 
-int Detector::__detection(const std::string objName, IDetector *detector, bool loop){
+int Detector::__detection(bool loop){
 
     std::vector<pose> results;
     int ret;
 
     // 开始识别[阻塞式函数]
-    ret = detector->detection();
+    ret = detectorPtr->detection();
     if(ret){
         std::cerr << "detection error" << std::endl;
         return -1;
     }
 
-    ret = detector->getResult(results);
+    ret = detectorPtr->getResult(results);
     if(ret){
         std::cerr << "get result error" << std::endl;
         return -1;
@@ -102,7 +102,7 @@ int Detector::__detection(const std::string objName, IDetector *detector, bool l
 
 
 int Detector::setDetector(const std::string &name, const std::string &objectName, ENTITY_TYPE type, \
-                          const std::string &configFile = NULL){
+                          std::string configFile){
 
     int ret = 0;
 
@@ -120,8 +120,8 @@ int Detector::setDetector(const std::string &name, const std::string &objectName
     else
         this->detectorPtr = NULL;
 
-    if(detectorPtr != NULL);
-    return 0;
+    if(detectorPtr != NULL)
+        return 0;
 
     if(type == PYTHON)
         this->detectorPtr = pyLoader->loadDetector(name);
@@ -133,7 +133,7 @@ int Detector::setDetector(const std::string &name, const std::string &objectName
         return -1;
     }
 
-    if(configFile != NULL)
+    if(configFile.empty())
         IDebug("%s", "setting detector config");
 
     std::string prefix = "/home/fshs/hirop_vision/data/";

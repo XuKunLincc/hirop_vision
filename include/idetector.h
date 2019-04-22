@@ -108,9 +108,9 @@ protected:
     hirop_vision::ENTITY_TYPE entityType;
 
     /**
-     * @brief isMultiDetector 是否支持多物体识别
+     * @brief _isMultiDetector 是否支持多物体识别
      */
-    bool isMultiDetector;
+    bool _isMultiDetector;
 
 };
 

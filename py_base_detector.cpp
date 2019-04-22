@@ -159,12 +159,12 @@ ENTITY_TYPE PyBaseDetector::getEntityType(){
 }
 
 int PyBaseDetector::isMultiDetector(){
-    PyLockHelper lock;
+//    PyLockHelper lock;
 
-    PyObject *ret = PyObject_CallMethod(pClassInstance, "isMultiDetector", "OO", pClassInstance, matObj);
+//    PyObject *ret = PyObject_CallMethod(pClassInstance, "isMultiDetector", "OO", pClassInstance, matObj);
 
-    if(!ret)
-        PyErr_Print();
+//    if(!ret)
+//        PyErr_Print();
 
     return 0;
 }
