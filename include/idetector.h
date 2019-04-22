@@ -84,6 +84,12 @@ public:
      */
     virtual int getName(std::string &name) = 0;
 
+    /**
+     * @brief   是否支持多物体检测
+     * @return  1 支持 0 不支持
+     */
+    virtual int isMultiDetector() = 0;
+
 
     /**
      * @brief      获取当前训练器的实现实体
@@ -101,6 +107,10 @@ protected:
     // 其算法实现类别 C++ / Python
     hirop_vision::ENTITY_TYPE entityType;
 
+    /**
+     * @brief isMultiDetector 是否支持多物体识别
+     */
+    bool isMultiDetector;
 
 };
 

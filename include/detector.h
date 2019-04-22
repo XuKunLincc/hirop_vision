@@ -33,6 +33,11 @@ namespace hirop_vision {
 
 /**
  * @brief           hirop_vision相关detector的接口类
+ *
+ *  检测器对于实现语言有两大类别，C++和Python。对于其能力也分为两大类别，多物体识别器和单物体识别器
+ *  对于多物体识别器，在整个程序生命周期，只拥有一个检测器的实例，其配置是通用的。
+ *  而对于单物体识别器，在整个程序生命周期中，对于不同物体均有一个实例，其每个实例的配置是独立的。
+ *
  * @author          XuKunLin
  * @date            2019-03-20
  * @todo            1，当传递检测器名称时，检测检测器是否存在
@@ -59,6 +64,17 @@ public:
     Detector();
 
     /**
+     * @brief       设置检测器的名称和类别
+     * @param[in] name，检测器的名称
+     * @param[in] type，检测器的类别
+     * @param[in] objectName，检测物体的名称
+     * @param[in] configFile，配置文件的路径
+     * @return 0 成功 -1 失败
+     */
+    int setDetector(const std::string &name, const std::string &objectName, ENTITY_TYPE type, \
+                    const std::string &configFile = NULL);
+
+    /**
      * @brief   开始进行物体识别，只检测一次，检测成功后即返回
      * @param [objectName]      指定需要识别物体的名称
      * @param [detectorName]   指定识别器名称
@@ -66,8 +82,13 @@ public:
      *          0  开始识别成功
      *          -1 开始识别失败
      */
-    int detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg);
+    int detectionOnce(const cv::Mat &depthImg, const cv::Mat &colorImg);
 
+    /**
+     * @brief       开始进行物体识别，循环检测
+     * @param
+     * @return
+     */
     int detection(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg);
 
     /**
@@ -87,6 +108,7 @@ private:
      */
     int __detection(const std::string objName, IDetector *detector, bool loop);
 
+
 private:
     // 状态监听者实例
     DetectStateListener *listener;
@@ -104,6 +126,26 @@ private:
     PyLoader *pyLoader;
 
     IDetector *detectorPtr;
+
+    /**
+     * @brief cppDetectors C++多物体识别器缓存
+     */
+    std::map<std::string, IDetector*> cppDetectors;
+
+    /**
+     * @brief pyDetectors python多物体识别器缓存
+     */
+    std::map<std::string, IDetector*> pyDetectors;
+
+    /**
+     * @brief cppSingleDetectors C++单物体识别器缓存
+     */
+    std::map<std::string, std::map<std::string, IDetector*>> cppSingleDetectors;
+
+    /**
+     * @brief pySingleDetectors python单物体识别器缓存
+     */
+    std::map<std::string, std::map<std::string, IDetector*>> pySingleDetectors;
 };
 
 }

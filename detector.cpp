@@ -1,4 +1,5 @@
 #include "detector.h"
+#include "hirop_debug.h"
 
 using namespace hirop_vision;
 
@@ -10,7 +11,7 @@ Detector::Detector(){
     detectorPtr = NULL;
 }
 
-int Detector::detectionOnce(std::string objectName, std::string detectorName,  const cv::Mat &depthImg, const cv::Mat &colorImg){
+int Detector::detectionOnce(const cv::Mat &depthImg, const cv::Mat &colorImg){
     /**
      * @todo
      *      1, 根据训练器名称，加载训练器
@@ -19,18 +20,13 @@ int Detector::detectionOnce(std::string objectName, std::string detectorName,  c
      *
      **/
 
-    this->objectName = objectName;
-    this->detectorName = detectorName;
-
     if(detectionThr){
         std::cerr << "start detection error: detection thread was runnig" << std::endl;
         return -1;
     }
 
-    if(!detectorPtr)
-        detectorPtr = pyLoader->loadDetector(detectorName);
     if(!detectorPtr){
-        std::cerr << "start detection error: load detector was error" << std::endl;
+        std::cerr << "start detection error: load detector was NULL" << std::endl;
         return -1;
     }
 
@@ -80,17 +76,6 @@ int Detector::__detection(const std::string objName, IDetector *detector, bool l
     std::vector<pose> results;
     int ret;
 
-    // 数据保存的前缀路径
-    std::string prefix = "/home/fshs/hirop_vision/data/";
-    std::string detectorName = "LinemodTrainer";
-
-    // 加载参数
-    ret = detector->loadData(prefix + detectorName + "/" + objName, objName);
-    if(ret){
-        std::cerr << "load data error" << std::endl;
-        return -1;
-    }
-
     // 开始识别[阻塞式函数]
     ret = detector->detection();
     if(ret){
@@ -114,3 +99,79 @@ int Detector::__detection(const std::string objName, IDetector *detector, bool l
     detectionThr = NULL;
     return 0;
 }
+
+
+int Detector::setDetector(const std::string &name, const std::string &objectName, ENTITY_TYPE type, \
+                          const std::string &configFile = NULL){
+
+    int ret = 0;
+
+    this->detectorName = name;
+    this->objectName = objectName;
+
+    if( cppDetectors.count(name) )
+        this->detectorPtr = cppDetectors.at(name);
+    else if(pyDetectors.count(name))
+        this->detectorPtr = pyDetectors.at(name);
+    else if(cppSingleDetectors.count(name) && cppSingleDetectors.at(name).count(objectName))
+        this->detectorPtr = cppSingleDetectors.at(name).at(objectName);
+    else if(pySingleDetectors.count(name) && pySingleDetectors.at(name).count(objectName))
+        this->detectorPtr = pySingleDetectors.at(name).at(objectName);
+    else
+        this->detectorPtr = NULL;
+
+    if(detectorPtr != NULL);
+    return 0;
+
+    if(type == PYTHON)
+        this->detectorPtr = pyLoader->loadDetector(name);
+    else if(type == CPP)
+        this->detectorPtr = loader->loadDetector(name);
+
+    if(detectorPtr == NULL){
+        IErrorPrint("%s", "detectorPtr was NULL");
+        return -1;
+    }
+
+    if(configFile != NULL)
+        IDebug("%s", "setting detector config");
+
+    std::string prefix = "/home/fshs/hirop_vision/data/";
+    std::string detectorName = "LinemodTrainer";
+
+    ret = detectorPtr->loadData(prefix + detectorName + "/" + objectName, objectName);
+    if(ret){
+        IErrorPrint("%s", "detctorPtr loadData failed");
+        return -1;
+    }
+
+    // 保存相关的检测器实例
+    if(type == PYTHON){
+        if(detectorPtr->isMultiDetector())
+            pyDetectors.insert(std::pair<std::string, IDetector *>(name, this->detectorPtr));
+        else{
+            if(pySingleDetectors.count(name))
+                pySingleDetectors.at(name).insert(std::pair<std::string, IDetector *>(name, this->detectorPtr));
+            else{
+                std::map<std::string, IDetector*> tmp;
+                tmp.insert(std::pair<std::string, IDetector *>(name, this->detectorPtr));
+                pySingleDetectors.insert(std::make_pair(objectName, tmp));
+            }
+        }
+    }else{
+        if(detectorPtr->isMultiDetector())
+            cppDetectors.insert(std::pair<std::string, IDetector *>(name, this->detectorPtr));
+        else{
+            if(cppSingleDetectors.count(name))
+                cppSingleDetectors.at(name).insert(std::pair<std::string, IDetector *>(objectName, this->detectorPtr));
+            else{
+                std::map<std::string, IDetector*> tmp;
+                tmp.insert(std::pair<std::string, IDetector *>(objectName, this->detectorPtr));
+                cppSingleDetectors.insert(std::make_pair(name, tmp));
+            }
+        }
+    }
+    return 0;
+}
+
+

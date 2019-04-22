@@ -157,3 +157,14 @@ int PyBaseDetector::getName(std::string &name){
 ENTITY_TYPE PyBaseDetector::getEntityType(){
     return entityType;
 }
+
+int PyBaseDetector::isMultiDetector(){
+    PyLockHelper lock;
+
+    PyObject *ret = PyObject_CallMethod(pClassInstance, "isMultiDetector", "OO", pClassInstance, matObj);
+
+    if(!ret)
+        PyErr_Print();
+
+    return 0;
+}
