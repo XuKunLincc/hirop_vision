@@ -3,6 +3,8 @@
 #include "utils/py_lock_helper.h"
 
 #include <stdlib.h>
+#include <eigen3/Eigen/Dense>
+#include <opencv2/core/eigen.hpp>
 #include <opencv2/opencv.hpp>
 #include <numpy/arrayobject.h>
 
@@ -17,7 +19,7 @@ PyBaseDetector::PyBaseDetector(PyObject *pClass, std::string detectorName){
         IErrorPrint("%s", "Python instance load failed: the class was null");
         return;
     }
-    pClassInstance = PyInstanceMethod_New(pClass);
+    pClassInstance = PyObject_CallObject(pClass, NULL);
     if(!pClassInstance)
         IErrorPrint("%s", "Python Detector can't intance");
 
@@ -46,7 +48,7 @@ int PyBaseDetector::loadData(const std::string path, const std::string objectNam
         return -1;
     }
 
-    PyObject* ret =  PyObject_CallMethod(pClassInstance, "loadData", "Oss", pClassInstance, path.c_str(), objectName.c_str());
+    PyObject* ret =  PyObject_CallMethod(pClassInstance, "loadData", "ss",  path.c_str(), objectName.c_str());
 
     if(!ret){
         PyErr_Print();
@@ -65,7 +67,7 @@ int PyBaseDetector::detection(){
         return -1;
     }
 
-    PyObject *ret = PyObject_CallMethod(pClassInstance, "detection", "O", pClassInstance);
+    PyObject *ret = PyObject_CallMethod(pClassInstance, "detection","");
     if(!ret){
         PyErr_Print();
         return -1;
@@ -94,7 +96,7 @@ void PyBaseDetector::setColorImg(const cv::Mat &inputImg){
 
     IDebug("PyArray_SimpleNewFromData finish");
 
-    PyObject *ret = PyObject_CallMethod(pClassInstance, "setColorImg", "OO", pClassInstance, matObj);
+    PyObject *ret = PyObject_CallMethod(pClassInstance, "setColorImg", "O", matObj);
     if(!ret)
         PyErr_Print();
 }
@@ -112,14 +114,10 @@ void PyBaseDetector::setDepthImg(const cv::Mat &inputImg){
     char * depthTmp= new char[rows * cols * channels];
     memcpy(depthTmp, inputImg.ptr<uchar>(0), rows * cols * channels);
 
-    IDebug("memcpy mat finish");
-
     npy_intp Dims[3] = {rows, cols, channels};
     PyObject *matObj = PyArray_SimpleNewFromData(3, Dims, NPY_UBYTE, depthTmp);
 
-    IDebug("PyArray_SimpleNewFromData finish");
-
-    PyObject *ret = PyObject_CallMethod(pClassInstance, "setDepthImg", "OO", pClassInstance, matObj);
+    PyObject *ret = PyObject_CallMethod(pClassInstance, "setDepthImg", "O", matObj);
 
     if(!ret)
         PyErr_Print();
@@ -133,18 +131,58 @@ int PyBaseDetector::getResult(std::vector<pose> &poses){
         return -1;
     }
 
-    //    PyObject* ret =  PyObject_CallMethod(pClassInstance, "loadData", "Oss", pClassInstance, path.c_str(), objectName.c_str());
+    PyObject* ret =  PyObject_CallMethod(pClassInstance, "getResult", "");
 
-    //    PyArrayObject *array = (PyArrayObject *) ret;
-    //    int rows = array->dimensions[0], columns = array->dimensions[1];
-    //    std::cout << "Rows = "  << rows << "columns ="<<  columns <<std::endl;
-    //    for( int Index_m = 0; Index_m < rows; Index_m++){
+    if(!ret)
+        PyErr_Print();
 
-    //        for(int Index_n = 0; Index_n < columns; Index_n++){
-    //            std::cout<<*(double *)(array->data + Index_m * array->strides[0] + Index_n * array->strides[1])<<" ";
-    //        }
-    //        std::cout<<std::endl;
-    //    }
+    PyObject *R_item = PyList_GetItem(ret, 0);
+    PyObject *T_item = PyList_GetItem(ret, 1);
+
+    cv::Mat_<float> R_mat(3,3);
+
+    double R[9];
+
+    {
+        PyArrayObject *array = (PyArrayObject *) R_item;
+        int rows = array->dimensions[0], columns = array->dimensions[1];
+        std::cout << "Rows = "  << rows << "columns ="<<  columns <<std::endl;
+        for( int Index_m = 0; Index_m < rows; Index_m++){
+            for(int Index_n = 0; Index_n < columns; Index_n++){
+                R[Index_m * 3 + Index_n] = *(float *)(array->data + Index_m * array->strides[0] + Index_n * array->strides[1]);
+            }
+        }
+        R_mat << R[0],R[1],R[2],R[3],R[4],R[5],R[6],R[7],R[8];
+    }
+
+    double T[3];
+    {
+        PyArrayObject *array = (PyArrayObject *) T_item;
+        int rows = array->dimensions[0], columns = array->dimensions[1];
+        for( int Index_m = 0; Index_m < rows; Index_m++){
+            for(int Index_n = 0; Index_n < columns; Index_n++){
+                T[Index_m] = *(float *)(array->data + Index_m * array->strides[0] + Index_n * array->strides[1]);
+            }
+        }
+    }
+
+    pose p;
+
+    Eigen::Matrix3d t_R;
+    cv::cv2eigen((cv::Matx33d)R_mat, t_R);
+    Eigen::Quaterniond q(t_R);
+    Eigen::Vector4d q_tmp = q.coeffs();
+
+    p.quaternion.x = q_tmp[0];
+    p.quaternion.y = q_tmp[1];
+    p.quaternion.z = q_tmp[2];
+    p.quaternion.w = q_tmp[3];
+
+    p.position.x = T[0];
+    p.position.y = T[1];
+    p.position.z = T[2];
+
+    poses.push_back(p);
 
     return 0;
 }
@@ -159,12 +197,12 @@ ENTITY_TYPE PyBaseDetector::getEntityType(){
 }
 
 int PyBaseDetector::isMultiDetector(){
-//    PyLockHelper lock;
+    //    PyLockHelper lock;
 
-//    PyObject *ret = PyObject_CallMethod(pClassInstance, "isMultiDetector", "OO", pClassInstance, matObj);
+    //    PyObject *ret = PyObject_CallMethod(pClassInstance, "isMultiDetector", "OO", pClassInstance, matObj);
 
-//    if(!ret)
-//        PyErr_Print();
+    //    if(!ret)
+    //        PyErr_Print();
 
     return 0;
 }

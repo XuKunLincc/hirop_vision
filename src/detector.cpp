@@ -6,7 +6,7 @@ using namespace hirop_vision;
 Detector::Detector(){
     detectionThr = NULL;
     listener = NULL;
-    loader = new Loader();
+    cppLoader = new CppLoader();
     pyLoader = PyLoader::getPyLoader();
     detectorPtr = NULL;
 }
@@ -45,10 +45,13 @@ int Detector::detectionOnce(const cv::Mat &depthImg, const cv::Mat &colorImg){
 
 int Detector::detection(std::string objectName, std::string detectorName, const cv::Mat &depthImg, const cv::Mat &colorImg){
 
-    if(!detectorPtr)
-        detectorPtr = loader->loadDetector(detectorName);
+    if(detectionThr){
+        std::cerr << "start detection error: detection thread was runnig" << std::endl;
+        return -1;
+    }
+
     if(!detectorPtr){
-        std::cerr << "start detection error: load detector was error" << std::endl;
+        std::cerr << "start detection error: load detector was NULL" << std::endl;
         return -1;
     }
 
@@ -126,7 +129,7 @@ int Detector::setDetector(const std::string &name, const std::string &objectName
     if(type == PYTHON)
         this->detectorPtr = pyLoader->loadDetector(name);
     else if(type == CPP)
-        this->detectorPtr = loader->loadDetector(name);
+        this->detectorPtr = cppLoader->loadDetector(name);
 
     if(detectorPtr == NULL){
         IErrorPrint("%s", "detectorPtr was NULL");

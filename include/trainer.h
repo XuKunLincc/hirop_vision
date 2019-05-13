@@ -22,11 +22,11 @@
  *      from this software without specific prior written permission.
  */
 #include "configure.h"
-#include "loader.h"
 #include "itrainer.h"
 #include "trainer_listener.h"
 
 #include <boost/thread.hpp>
+#include "cpp_loader.h"
 
 namespace hirop_vision {
 
@@ -124,7 +124,7 @@ private:
     Configure *config;
 
     // 动态库加载器
-    Loader *loader;
+    CppLoader *loader;
 
     // 训练状态变换监听者
     TrainStateListener *listener;

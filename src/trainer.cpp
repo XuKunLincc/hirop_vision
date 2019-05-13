@@ -7,7 +7,7 @@ using namespace hirop_vision;
 
 Trainer::Trainer(){
     trainThr = NULL;
-    loader = new Loader();
+    loader = new CppLoader();
     listener = NULL;
 }
 

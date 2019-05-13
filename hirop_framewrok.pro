@@ -6,7 +6,7 @@ CONFIG -= qt
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_LFLAGS += -std=c++11 -Wl,--export-dynamic
 
-DEFINES += BOOST_USE_LIB DEBUG
+DEFINES += BOOST_USE_LIB DEBUG __LINUX__
 
 TARGET = hirop_vision
 
@@ -20,32 +20,36 @@ PYTHON_LIBPATH = /home/fshs/anaconda3/lib
 PYTHON_LIBS = -lpython3.6m
 
 SOURCES += \
-    trainer.cpp \
-    detector.cpp \
-    configure.cpp \
-    loader.cpp \
-    c_base_trainer.cpp \
-    c_base_detector.cpp \
-    py_base_detector.cpp \
-    py_loader.cpp \
-    py_lock_helper.cpp
+    src/trainer.cpp \
+    src/detector.cpp \
+    src/configure.cpp \
+    src/c_base_trainer.cpp \
+    src/c_base_detector.cpp \
+    src/py_base_detector.cpp \
+    src/py_loader.cpp \
+    src/utils/py_lock_helper.cpp \
+    src/cpp_loader.cpp
 
 LIBS += \
     -lboost_thread \
     -lboost_system \
-    /home/fshs/work/hirop_vision/hirop_framework/libs/libyaml-cpp.so.0.6 \
-    -Wl,-rpath=/home/fshs/work/hirop_vision/hirop_framework/libs/ \
-    -Wl,-rpath=/home/fshs/anaconda3/lib/\
+    -L../out/libs \
+    $$PWD/libs/libyaml-cpp.so.0.6 \
+    -Wl,-rpath=$$PWD/libs/ \
+    -Wl,-rpath=../out/libs  \
+    -Wl,-rpath=$$PYTHON_LIBPATH \
     -L$$PYTHON_LIBPATH \
     -lpython3.6m \
+    -lHPlugin \
     -ldl
 
 INCLUDEPATH += include \
       $$quote($$OPENCV_INC) \
       $$quote($$BOOST_INC) \
-      $$PYTHON_INC
+      $$PYTHON_INC \
+      ../out/include
 
-INSTALLPATH = ../hirop_vision_install
+INSTALLPATH = ../out
 
 inst.files += \
     include/idetector.h \
@@ -79,7 +83,6 @@ INSTALLS += libinst inst
 
 HEADERS += \
     include/idetector.h \
-    include/loader.h \
     include/vision.h \
     include/itrainer.h\
     include/simaple_trainer.h \
@@ -133,4 +136,5 @@ HEADERS += \
     include/hirop_debug.h \
     include/py_base_detector.h \
     include/py_loader.h \
-    include/utils/py_lock_helper.h
+    include/utils/py_lock_helper.h \
+    include/cpp_loader.h

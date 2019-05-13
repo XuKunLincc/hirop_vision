@@ -23,11 +23,11 @@
 
 
 #include "vision.h"
-#include "loader.h"
 #include "detection_listener.h"
 
 #include <boost/thread.hpp>
 #include "py_loader.h"
+#include "cpp_loader.h"
 
 namespace hirop_vision {
 
@@ -120,8 +120,7 @@ private:
     std::string objectName;
     std::string detectorName;
 
-    // 动态库加载器
-    Loader *loader;
+    CppLoader *cppLoader;
 
     PyLoader *pyLoader;
 

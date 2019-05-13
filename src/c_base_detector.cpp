@@ -2,9 +2,10 @@
 
 using namespace hirop_vision;
 
-CBaseDetector::CBaseDetector(std::string name){
+CBaseDetector::CBaseDetector(std::string name, bool isMultiDetector){
     this->name = name;
     this->entityType = CPP;
+    this->_isMultiDetector = isMultiDetector;
 }
 
 int CBaseDetector::getName(std::string &name){
@@ -22,4 +23,8 @@ void CBaseDetector::setColorImg(const cv::Mat &inputImg){
 
 void CBaseDetector::setDepthImg(const cv::Mat &inputImg){
 
+}
+
+int CBaseDetector::isMultiDetector(){
+    return _isMultiDetector;
 }

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "hplugin.h"
 #include "vision.h"
 
 namespace hirop_vision{
@@ -115,5 +116,6 @@ protected:
 };
 
 }
+H_DECLARE_INTERFACE(hirop_vision::IDetector, "IDetector/V1.0")
 
 #endif

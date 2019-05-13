@@ -8,7 +8,7 @@ namespace hirop_vision {
 class CBaseDetector:public IDetector{
 
 public:
-    CBaseDetector(std::string name);
+    CBaseDetector(std::string name, bool isMultiDetector);
 
     int getName(std::string &name);
 
@@ -17,6 +17,8 @@ public:
     void setColorImg(const cv::Mat &inputImg);
 
     void setDepthImg(const cv::Mat &inputImg);
+
+    int isMultiDetector();
 
 private:
 };
